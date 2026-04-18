@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Pull Code') {
+            steps {
+                git 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t autoshield-app .'
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh 'docker run -d -p 80:80 autoshield-app'
+            }
+        }
+
+        stage('Start Monitoring') {
+            steps {
+                sh 'nohup python3 detection/monitor.py &'
+            }
+        }
+    }
+}
